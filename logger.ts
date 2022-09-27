@@ -2,23 +2,55 @@
 
 import * as http from 'http';
 
-export default {
+let logger = {
   requestLogger: (
     req: http.IncomingMessage,
     res: http.ServerResponse,
     next: () => void
-  ) => {
-    console.log(
-      `${new Date().toISOString()}: ${req.headers['user-agent']} - HTTP/${
-        req.httpVersion
-      }: ${req.method} - ${req.url} - ${res.statusCode} - ${res.statusMessage}`
-    );
+  ): void => {
+    let msg = `${new Date().toISOString()}: ${
+      req.headers['user-agent']
+    } - HTTP/${req.httpVersion}: ${req.method} - ${req.url} - ${
+      res.statusCode
+    } - ${res.statusMessage}`;
+    logger.logWithColor(msg, logger.getColorForStatusCode(res.statusCode));
+    // audit logs using next function
     next();
   },
 
-  errorLogger: (err: Error, next: () => void) => {
-    console.error(
-      `${new Date().toISOString()}: ERROR OCCURED WITH TRACE: ${err.stack}`
+  errorLogger: (err: Error, next: () => void): void => {
+    logger.logWithColor(
+      `${new Date().toISOString()}: ERROR OCCURED WITH TRACE: `,
+      'warn'
     );
+    logger.logWithColor(err.stack as string, 'error');
+    // audit logs using next function
+    next();
+  },
+
+  logWithColor: (message: string, color: string): void => {
+    let colors: Record<string, string> = {
+      warn: '\x1b[33m',
+      error: '\x1b[31m',
+      info: '\x1b[32m',
+      debug: '\x1b[34m',
+    };
+    console.log(colors[color], message);
+  },
+
+  getColorForStatusCode: (statusCode: number): string => {
+    let color = 'info';
+    if (statusCode >= 500) {
+      color = 'error';
+    }
+    if (statusCode >= 400) {
+      color = 'warn';
+    }
+    if (statusCode >= 300) {
+      color = 'debug';
+    }
+    return color;
   },
 };
+
+export default logger;

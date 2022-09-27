@@ -41,9 +41,14 @@ server.listen(Number(env.port) || 3000, () => {
 
 // listen on request to server
 server.on('request', (req, res) => {
-  // log the request
+  // intercept the request and log it
   logger.requestLogger(req, res, () => {});
-  logger.errorLogger(new Error('Error'), () => {});
+});
+
+// listen on error to server
+server.on('error', (err) => {
+  // intercept the error and log it
+  logger.errorLogger(err, () => {});
 });
 
 // setup graceful shutdown
