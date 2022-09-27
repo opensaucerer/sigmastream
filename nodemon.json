@@ -1,0 +1,4 @@
+{
+  "ext": "*",
+  "exec": "ts-node ./server.ts"
+}
