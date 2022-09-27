@@ -14,6 +14,7 @@ let logger = {
       res.statusCode
     } - ${res.statusMessage}`;
     logger.logWithColor(msg, logger.getColorForStatusCode(res.statusCode));
+
     // audit logs using next function
     next();
   },
@@ -24,6 +25,7 @@ let logger = {
       'warn'
     );
     logger.logWithColor(err.stack as string, 'error');
+
     // audit logs using next function
     next();
   },

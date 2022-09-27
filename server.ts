@@ -67,6 +67,3 @@ process.on('SIGINT', () => {
     console.log('Http server closed.');
   });
 });
-
-// run the server using the command
-// tsc server.ts && node server.js
