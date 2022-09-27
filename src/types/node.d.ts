@@ -13,6 +13,7 @@ declare module 'http' {
   interface IncomingMessage {
     query: Record<string, string> | ParsedUrlQuery;
     path: string;
+    body: Record<string, any>;
   }
 }
 

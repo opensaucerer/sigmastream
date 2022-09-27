@@ -1,8 +1,8 @@
 import * as http from 'http';
-import { ParsedUrlQuery } from 'querystring';
 import logger from './logger';
-import { parseURL } from './utils';
+import { parseURL } from './helpers/utils';
 global.env = process.env; // load env once and make it global
+import * as router from './routes';
 
 // server setup
 const server = http.createServer(
@@ -10,27 +10,22 @@ const server = http.createServer(
     // parse url
     req.path = parseURL(req.url as string).path;
     req.query = parseURL(req.url as string).query;
-    if (req.path === 'stream') {
-      switch (req.method) {
-        case 'PUT':
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.write(JSON.stringify({ message: 'GET Endpoint' }));
-          res.end();
-          break;
-        case 'DELETE':
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.write(JSON.stringify({ message: 'POST Endpoint' }));
-          res.end();
-          break;
-        default:
-          res.writeHead(405);
-          res.end();
+
+    // parse req body
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(body);
+      } catch (error) {
+        req.body = {};
       }
-    } else {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.write(JSON.stringify({ message: 'Not Found' }));
-      res.end();
-    }
+    });
+
+    // handle routing
+    router.handleRouting(req, res);
   }
 );
 
