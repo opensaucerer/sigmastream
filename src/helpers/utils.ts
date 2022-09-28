@@ -1,5 +1,6 @@
 import { ParsedUrlQuery } from 'querystring';
 import * as urlparse from 'url';
+import * as http from 'http';
 
 export function parseURL(url: string): {
   path: string;
@@ -9,7 +10,42 @@ export function parseURL(url: string): {
   const path = parsedUrl.pathname;
   const trimmedPath = path?.replace(/^\/+|\/+$/g, '');
   return {
-    path: trimmedPath || '',
+    path: trimmedPath || '/',
     query: parsedUrl.query,
   };
+}
+
+export function readBody(
+  req: http.IncomingMessage
+): Promise<Record<string, any>> {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    let body = {};
+    req.on('data', (chunk) => {
+      data += chunk;
+    });
+    req.on('end', () => {
+      try {
+        body = JSON.parse(data);
+      } catch (error) {}
+      resolve(body);
+    });
+  });
+}
+
+export function parsePathVariables(
+  path: string,
+  route: string
+): Record<string, string> {
+  let pathVariables = path.split('/');
+  let routeVariables = route.split('/');
+  let pathVariablesObject: Record<string, string> = {};
+  if (routeVariables.length === pathVariables.length) {
+    for (let i = 0; i < routeVariables.length; i++) {
+      if (routeVariables[i].startsWith(':')) {
+        pathVariablesObject[routeVariables[i].slice(1)] = pathVariables[i];
+      }
+    }
+  }
+  return pathVariablesObject;
 }

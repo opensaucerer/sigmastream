@@ -1,4 +1,5 @@
 import * as http from 'http';
+import { parsePathVariables } from '../helpers/utils';
 
 let methods = ['get', 'post', 'put', 'delete', 'patch'];
 
@@ -10,23 +11,83 @@ let routesTable: Record<
 function getRouteFunction(
   path: string,
   method: string
-): (req: http.IncomingMessage, res: http.ServerResponse) => void {
-  return (
-    routesTable[path.toLowerCase()] &&
-    routesTable[path.toLowerCase()][method.toLowerCase()]
-  );
+):
+  | {
+      fn: (req: http.IncomingMessage, res: http.ServerResponse) => void;
+      route: string;
+    }
+  | undefined {
+  // remove preceding and trailing slashes
+  path = path.replace(/^\/+|\/+$/g, '');
+  if (routesTable[path || '/']) {
+    return {
+      fn: routesTable[path || '/'][method.toLowerCase()],
+      route: path,
+    };
+  }
+
+  // handle path variables
+  let pathVariables = path.split('/');
+  for (let route in routesTable) {
+    let routeVariables = route.split('/');
+    if (
+      routeVariables.length === pathVariables.length &&
+      method.toLowerCase() in routesTable[route]
+    ) {
+      let match = true;
+      for (let i = 0; i < routeVariables.length; i++) {
+        if (
+          !routeVariables[i].startsWith(':') &&
+          routeVariables[i] !== pathVariables[i]
+        ) {
+          match = false;
+          break;
+        }
+      }
+      if (match) {
+        return {
+          fn: routesTable[route][method.toLowerCase()],
+          route,
+        };
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function getRoute(
+  path: string
+): Record<
+  string,
+  (req: http.IncomingMessage, res: http.ServerResponse) => void
+> {
+  return routesTable[path];
 }
 
 export function handleRouting(
   req: http.IncomingMessage,
   res: http.ServerResponse
 ): void {
-  let routeFunction = getRouteFunction(req.path, req.method as string);
-  if (routeFunction) {
-    routeFunction(req, res);
+  let router = getRouteFunction(req.path, req.method as string);
+  if (router) {
+    req.params = parsePathVariables(req.path, router.route);
+    router.fn(req, res);
+  } else if (getRoute(req.path)) {
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.write(
+      JSON.stringify({
+        message: `Method ${req.method} not allowed for path /${req.path}`,
+      })
+    );
+    res.end();
   } else {
     res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: 'Not Found' }));
+    res.write(
+      JSON.stringify({
+        message: `Path /${req.path} not found`,
+      })
+    );
     res.end();
   }
 }
@@ -36,10 +97,13 @@ function registerRoute(
   method: string,
   routeFunction: (req: http.IncomingMessage, res: http.ServerResponse) => void
 ): void {
-  if (!routesTable[path.toLowerCase()]) {
-    routesTable[path.toLowerCase()] = {};
+  // remove preceding and trailing slashes
+  path = path.replace(/^\/+|\/+$/g, '');
+  // add path to routes table
+  if (!routesTable[path || '/']) {
+    routesTable[path || '/'] = {};
   }
-  routesTable[path.toLowerCase()][method.toLowerCase()] = routeFunction;
+  routesTable[path || '/'][method.toLowerCase()] = routeFunction;
 }
 
 export default {

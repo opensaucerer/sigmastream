@@ -14,6 +14,8 @@ declare module 'http' {
     query: Record<string, string> | ParsedUrlQuery;
     path: string;
     body: Record<string, any>;
+    params: Record<string, string>;
+    route: string;
   }
 }
 
