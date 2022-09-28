@@ -2,7 +2,7 @@ import * as http from 'http';
 import router from './router';
 
 router.put(
-  '/:streamId/end/:endStreamId',
+  '/stream/:streamId',
   function registerStream(req: http.IncomingMessage, res: http.ServerResponse) {
     console.log(req.body);
     console.log(req.query);
@@ -13,32 +13,8 @@ router.put(
   }
 );
 
-router.put(
-  '/:streamId/end',
-  function registerStream(req: http.IncomingMessage, res: http.ServerResponse) {
-    console.log(req.body);
-    console.log(req.query);
-    console.log(req.params);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: 'PUT END Endpoint' }));
-    res.end();
-  }
-);
-
-router.put(
-  '/:streamId/:userId',
-  function registerStream(req: http.IncomingMessage, res: http.ServerResponse) {
-    console.log(req.body);
-    console.log(req.query);
-    console.log(req.params);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: 'PUT Endpoint' }));
-    res.end();
-  }
-);
-
 router.delete(
-  '/:streamId',
+  '/stream/:streamId',
   function unregisterStream(
     req: http.IncomingMessage,
     res: http.ServerResponse

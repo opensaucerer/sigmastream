@@ -19,7 +19,10 @@ function getRouteFunction(
   | undefined {
   // remove preceding and trailing slashes
   path = path.replace(/^\/+|\/+$/g, '');
-  if (routesTable[path || '/']) {
+  if (
+    routesTable[path || '/'] &&
+    routesTable[path || '/'][method.toLowerCase()]
+  ) {
     return {
       fn: routesTable[path || '/'][method.toLowerCase()],
       route: path,
