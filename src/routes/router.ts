@@ -65,7 +65,33 @@ function getRoute(
   string,
   (req: http.IncomingMessage, res: http.ServerResponse) => void
 > {
-  return routesTable[path];
+  // remove preceding and trailing slashes
+  path = path.replace(/^\/+|\/+$/g, '');
+  if (routesTable[path || '/']) {
+    return routesTable[path || '/'];
+  }
+
+  // handle path variables
+  let pathVariables = path.split('/');
+  for (let route in routesTable) {
+    let routeVariables = route.split('/');
+    if (routeVariables.length === pathVariables.length) {
+      let match = true;
+      for (let i = 0; i < routeVariables.length; i++) {
+        if (
+          !routeVariables[i].startsWith(':') &&
+          routeVariables[i] !== pathVariables[i]
+        ) {
+          match = false;
+          break;
+        }
+      }
+      if (match) {
+        return routesTable[route];
+      }
+    }
+  }
+  return routesTable['']; // return empty route
 }
 
 export function handleRouting(
