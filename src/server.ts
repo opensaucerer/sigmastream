@@ -3,6 +3,7 @@ import logger from './logger';
 import { parseURL, readBody } from './helpers/utils';
 global.env = process.env; // load env once and make it global
 import * as router from './routes';
+import * as rest from './rest';
 
 // server setup
 const server = http.createServer(
@@ -12,8 +13,12 @@ const server = http.createServer(
     req.query = parseURL(req.url as string).query;
 
     // parse req body
-    req.body = (await readBody(req)).body;
-    req.raw = (await readBody(req)).raw;
+    let data = await readBody(req);
+    req.body = data.body;
+    req.raw = data.raw;
+
+    // overload res object
+    res = rest.overloadResponse(res);
 
     // handle routing
     router.handleRouting(req, res);

@@ -4,12 +4,7 @@ import router from './router';
 router.put(
   '/stream/:streamId',
   function registerStream(req: http.IncomingMessage, res: http.ServerResponse) {
-    console.log(req.body);
-    console.log(req.query);
-    console.log(req.params);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: 'PUT NO Endpoint' }));
-    res.end();
+    res.status(200).json({ message: 'PUT NO Endpoint' });
   }
 );
 
@@ -19,20 +14,14 @@ router.delete(
     req: http.IncomingMessage,
     res: http.ServerResponse
   ) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: 'DELETE Endpoint' }));
-    res.end();
+    res.status(200).json({ message: 'DELETE Endpoint' });
   }
 );
 
 router.get('', (req: http.IncomingMessage, res: http.ServerResponse) => {
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write(
-    JSON.stringify({
-      status: true,
-      message: 'Welcome to Sigma streaming server',
-      version: '1.0.0',
-    })
-  );
-  res.end();
+  res.status(200).json({
+    status: true,
+    message: 'Welcome to Sigma streaming server',
+    version: '1.0.0',
+  });
 });

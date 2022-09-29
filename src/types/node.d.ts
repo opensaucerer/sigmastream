@@ -18,6 +18,12 @@ declare module 'http' {
     params: Record<string, string>;
     route: string;
   }
+
+  interface ServerResponse {
+    status: (statusCode: number) => {
+      json: (data: any) => void;
+    };
+  }
 }
 
 export {};
