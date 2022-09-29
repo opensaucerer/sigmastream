@@ -15,5 +15,8 @@
     "@types/node": "^18.7.23",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1225.0"
   }
 }

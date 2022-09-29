@@ -1,9 +1,12 @@
 import * as http from 'http';
 import logger from './logger';
 import { parseURL, readBody } from './helpers/utils';
-global.env = process.env; // load env once and make it global
-import * as router from './routes';
 import * as rest from './rest';
+import * as dotenv from './dotenv';
+import * as router from './router';
+import './route';
+dotenv.loadEnv();
+global.env = process.env; // load env once and make it global
 
 // server setup
 const server = http.createServer(
@@ -27,7 +30,7 @@ const server = http.createServer(
 
 server.listen(Number(env.PORT) || 3000, () => {
   console.log(
-    `The server is listening on http://localhost:${env.port || 3000}`
+    `The server is listening on http://localhost:${env.PORT || 3000}`
   );
 });
 
