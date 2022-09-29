@@ -15,9 +15,10 @@ export function parseURL(url: string): {
   };
 }
 
-export function readBody(
-  req: http.IncomingMessage
-): Promise<Record<string, any>> {
+export function readBody(req: http.IncomingMessage): Promise<{
+  body: Record<string, any>;
+  raw: any;
+}> {
   return new Promise((resolve, reject) => {
     let data = '';
     let body = {};
@@ -28,7 +29,10 @@ export function readBody(
       try {
         body = JSON.parse(data);
       } catch (error) {}
-      resolve(body);
+      resolve({
+        body,
+        raw: data,
+      });
     });
   });
 }

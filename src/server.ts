@@ -12,7 +12,8 @@ const server = http.createServer(
     req.query = parseURL(req.url as string).query;
 
     // parse req body
-    req.body = await readBody(req);
+    req.body = (await readBody(req)).body;
+    req.raw = (await readBody(req)).raw;
 
     // handle routing
     router.handleRouting(req, res);
