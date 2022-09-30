@@ -1,10 +1,27 @@
 # Sigma Stream
 
-An API Service for rate limiting concurrent streams allowed per user.
+An API Service for limiting concurrent streams allowed per user.
 
 ### Assumptions
 
 One assumption here is that a user is allowed to use their account on different devices as well as stream the same content on these devices at the same time with each counting towards their concurrent stream limit. This is a very common use case for streaming services.
+
+### Design
+
+Two endpoints are exposed by the service:
+
+- `PUT /stream/:userId/:streamId - Register a stream` expected to be called when a user starts streaming a video.
+  This endpoint implements a transactional write using DynamoDB conditional update ensuring that an append doesn't happen once a user's strem list is over the limit of 3 while avoiding the occurence of race conditions.
+- `DELETE /stream/:userId/:streamId - Unregister a stream` expected to be called when a user stops streaming a video.
+  This is a little more delicate than the above condering that DynamoDB's transaction implements an either or logic such that it's either a write transaction or a read transaction. No way to combine both. So, the approach here shift to using the idea behind optimistic locking using versioning. The version is incremented on every write and when a removal update is to be done, the version is checked using DynamoDB's conditional update to ensure that the version hasn't changed since the last read. This ensures that the removal update is done on the latest version of the stream list.
+
+  If there happens to have been a version change, the operation fails and currently nothing is being done to handle retries. This is something that can be improved upon depending on the use case.
+
+  With the version increament on every write, we are forced to think of the `max_safe_integer` limit present on DynamoDB.
+
+  > DynamoDB attribute of type Number can store numbers up to 38 digits of precision.
+
+  Even in the presence of a million RPS to perform a write operation, the service will still be good to version safely with precision for hundreds of years.
 
 ### Notes
 
