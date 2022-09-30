@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { parsePathVariables } from './helpers/utils';
+import { parsePathVariables } from './utils';
 
 let methods = ['get', 'post', 'put', 'delete', 'patch'];
 

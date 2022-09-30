@@ -90,11 +90,11 @@ This is a good trade-off for our use case as we are not dealing with sensitive d
 
 A geo-aware load balancer would be implemented to balance traffic across the different regions. This would also help ensure that the user is always routed to the closest region to them thus reducing latency.
 
-Backups will be computed regularly and ready to be restored in the event of a disaster. This backups will be distributed across multiple racks, availability zones, and regions to ensure that we are not affected by a single region going down. We can over-scale our backupps with a trade-off of cost.
+Backups will be computed regularly and ready to be restored in the event of a disaster. This backups will be distributed across multiple racks, availability zones, and regions to ensure that we are not affected by a single region going down. We can over-scale our backups with a trade-off of cost.
 
 ## Logging and Monitoring
 
-Currently, the framework implements a simple logging system that logs to the console. This can be easily extended to log to a file or a database. Ideally, this database would means a datalake like AWS S3 which can then be later processed using tools like AWS Glue or AWS Athena to enable querying for generation of reports, dashboards and alerts, analytics etc.
+Currently, the framework implements a simple logging system that logs to the console. This can be easily extended to log to a file or a database. Ideally, this database would mean a datalake like AWS S3 which can then be later processed using tools like AWS Glue or AWS Athena to enable querying for generation of reports, dashboards and alerts, analytics etc.
 
 For a more optimal experience on the end of the user, it is important that we do not hold on to the request much more than necessary as that can even become expensive. For this reason, the framework implements a `next()` function that can be used to execute, let's say, an operation of pushing the logs to a queue like AWS SQS (due to its message retainment). This queue can then be processed by a lambda function that pushes the logs to the datalake.
 

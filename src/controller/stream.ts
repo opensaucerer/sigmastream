@@ -9,16 +9,46 @@ export function home(req: http.IncomingMessage, res: http.ServerResponse) {
   });
 }
 
-export function registerStream(
+export async function registerStream(
   req: http.IncomingMessage,
   res: http.ServerResponse
 ) {
-  res.status(200).json({ message: 'PUT NO Endpoint' });
+  let data = await streamLogic.registerStream({
+    streamId: req.params.streamId,
+    userId: req.params.userId,
+  });
+  if (!data.status) {
+    return res.status(403).json({
+      status: false,
+      message: data.message,
+      error: data.error,
+    });
+  }
+  return res.status(200).json({
+    status: true,
+    message: data.message,
+    data: data.data,
+  });
 }
 
-export function unregisterStream(
+export async function unregisterStream(
   req: http.IncomingMessage,
   res: http.ServerResponse
 ) {
-  res.status(200).json({ message: 'DELETE Endpoint' });
+  let data = await streamLogic.unregisterStream({
+    streamId: req.params.streamId,
+    userId: req.params.userId,
+  });
+  if (!data.status) {
+    return res.status(403).json({
+      status: false,
+      message: data.message,
+      error: data.error,
+    });
+  }
+  return res.status(200).json({
+    status: true,
+    message: data.message,
+    data: data.data,
+  });
 }

@@ -6,7 +6,7 @@ function overloadResponse(res: http.ServerResponse): http.ServerResponse {
   } {
     return {
       json: function (data: any): void {
-        res.writeHead(statusCode | 200, {
+        res.writeHead(statusCode || 200, {
           'Content-Type': 'application/json',
         });
         res.write(JSON.stringify(data));

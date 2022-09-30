@@ -1,9 +1,50 @@
 import aws from 'aws-sdk';
-console.log(env.ACCESS_KEY, env.SECRET_KEY);
+import '../config/env';
+import logger from '../logger';
+
 const dynamo = new aws.DynamoDB.DocumentClient({
-  region: 'us-east-1',
-  accessKeyId: 'AKIA5TVLF7BLNNZE6UEW',
-  secretAccessKey: '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',
+  region: env.AWS_REGION,
+  accessKeyId: env.ACCESS_KEY,
+  secretAccessKey: env.SECRET_KEY,
 });
+
+export function createStreamTable() {
+  const db = new aws.DynamoDB({
+    region: env.AWS_REGION,
+    accessKeyId: env.ACCESS_KEY,
+    secretAccessKey: env.SECRET_KEY,
+  });
+
+  const params = {
+    TableName: 'stream',
+    KeySchema: [
+      {
+        AttributeName: 'userId',
+        KeyType: 'HASH',
+      },
+    ],
+    AttributeDefinitions: [
+      {
+        AttributeName: 'userId',
+        AttributeType: 'S',
+      },
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 1,
+      WriteCapacityUnits: 1,
+    },
+  };
+
+  db.createTable(params, (err, data) => {
+    if (err) {
+      logger.logWithColor('Skipping table creation: ' + err.message, 'warn');
+    } else {
+      logger.logWithColor(
+        `Table '${data.TableDescription?.TableName}' created successfully`,
+        'info'
+      );
+    }
+  });
+}
 
 export default dynamo;

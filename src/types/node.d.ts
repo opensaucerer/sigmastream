@@ -6,6 +6,7 @@ declare global {
       PORT: string;
       ACCESS_KEY: string;
       SECRET_KEY: string;
+      AWS_REGION: string;
     }
   }
   var env: NodeJS.ProcessEnv;

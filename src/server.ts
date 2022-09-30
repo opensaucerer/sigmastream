@@ -1,12 +1,14 @@
 import * as http from 'http';
 import logger from './logger';
-import { parseURL, readBody } from './helpers/utils';
+import { parseURL, readBody } from './utils';
 import * as rest from './rest';
 import * as dotenv from './dotenv';
+dotenv.loadEnv();
 import * as router from './router';
 import './route';
-dotenv.loadEnv();
-global.env = process.env; // load env once and make it global
+import './config/env';
+import * as dynamo from './database/dynamo';
+dynamo.createStreamTable();
 
 // server setup
 const server = http.createServer(
@@ -43,10 +45,13 @@ server.on('request', (req: http.IncomingMessage, res: http.ServerResponse) => {
 });
 
 // listen on error to server
-server.on('error', (err: Error) => {
-  // intercept the error and log it
-  logger.errorLogger(err, () => {});
-});
+server.on(
+  'error',
+  (err: Error, req: http.IncomingMessage, res: http.ServerResponse) => {
+    // intercept the error and log it
+    logger.errorLogger(err, () => {});
+  }
+);
 
 // setup graceful shutdown
 process.on('SIGTERM', () => {

@@ -3,6 +3,6 @@ import * as controller from '../controller';
 
 router.get('/', controller.home);
 
-router.put('/stream/:streamId', controller.registerStream);
+router.put('/stream/:userId/:streamId', controller.registerStream);
 
-router.delete('/stream/:streamId', controller.unregisterStream);
+router.delete('/stream/:userId/:streamId', controller.unregisterStream);
