@@ -48,4 +48,28 @@ export async function createStreamTable() {
   }
 }
 
+export async function deleteStreamTable() {
+  const db = new aws.DynamoDB({
+    region: env.AWS_REGION,
+    accessKeyId: env.ACCESS_KEY,
+    secretAccessKey: env.SECRET_KEY,
+  });
+
+  const params = {
+    TableName: 'stream',
+  };
+
+  try {
+    let data = await db.deleteTable(params).promise();
+    logger.logWithColor(
+      `Table '${data.TableDescription?.TableName}' deleted successfully`,
+      'info'
+    );
+    return 0;
+  } catch (error: any) {
+    logger.logWithColor('Skipping table deletion: ' + error.message, 'warn');
+    return 1;
+  }
+}
+
 export default dynamo;

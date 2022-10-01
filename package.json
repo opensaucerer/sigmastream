@@ -7,7 +7,7 @@
     "start": "node ./dist/server.js",
     "dev": "npx nodemon",
     "build": "tsc -p .",
-    "test": "node ./dist/jest.js"
+    "test": "tsc -p . && node ./dist/jest.js"
   },
   "keywords": [],
   "author": "",

@@ -21,6 +21,6 @@ jest('Should parse path variables', async () => {
   const route = '/test/:id';
   const params = utils.parsePathVariables(path, route);
   expect(params).toBeObject({
-    id: '123456789',
+    id: '1234567890',
   });
 });

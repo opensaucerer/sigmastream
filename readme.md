@@ -93,6 +93,12 @@ Run the tests using the following command.
 npm run test
 ```
 
+## Improvements
+
+I believe I can improve on the current testing framework I implemented as well as make the testing suite more robust...write tests for cases that will fail and test for cases that will pass.
+
+I can also improve on the web framework, wrap it around functions that can be easily instantiated like in the case of express `const app = express()` and then `app.get()` and `app.post()` etc.
+
 # Scaling to infinity?
 
 > There are no best solutions, only best trade-offs.

@@ -10,26 +10,15 @@ function run() {
 
     for (let i = 0; i < tests.length; i++) {
       const test = tests[i];
-      //   test
-      //     .fn()
-      //     .then(() => {
-      //       console.log('✅ Test passed:', `\x1b[32m${test.name}\x1b[0m`);
-      //       passed++;
-      //     })
-      //     .catch((error: Error) => {
-      //       console.log('❌ Test failed:', `\x1b[31m${test.name}\x1b[0m`);
-      //       // log the error stack
-      //       console.log(error.stack);
-      //     });
-      //   try {
-      await test.fn();
-      console.log('✅ Test passed:', `\x1b[32m${test.name}\x1b[0m`);
-      passed++;
-      //   } catch (error: any) {
-      //     console.log('❌ Test failed:', `\x1b[31m${test.name}\x1b[0m`);
-      //     // log the error stack
-      //     console.log(error.stack);
-      //   }
+      try {
+        await test.fn();
+        console.log('✅ Test passed:', `\x1b[32m${test.name}\x1b[0m`);
+        passed++;
+      } catch (error: any) {
+        console.log('❌ Test failed:', `\x1b[31m${test.name}\x1b[0m`);
+        // log the error stack
+        console.log(error.stack);
+      }
     }
 
     // run clean ups

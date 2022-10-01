@@ -20,6 +20,7 @@ declare global {
       in: (parent: any[]) => void;
     };
     toBeObject: (expected: any) => void;
+    toBeOfType: (expected: any) => void;
   };
   var afterJest: (fn: any) => void;
 }

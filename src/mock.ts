@@ -64,6 +64,12 @@ global.expect = function (actual: any) {
         }
       }
     },
+
+    toBeOfType: function (expected: any) {
+      if (typeof actual !== expected) {
+        throw new Error(`${actual} is not of type ${expected}`);
+      }
+    },
   };
 };
 

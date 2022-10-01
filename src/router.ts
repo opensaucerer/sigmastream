@@ -8,7 +8,7 @@ let routesTable: Record<
   Record<string, (req: http.IncomingMessage, res: http.ServerResponse) => void>
 > = {};
 
-function getRouteFunction(
+export function getRouteFunction(
   path: string,
   method: string
 ):
@@ -59,7 +59,7 @@ function getRouteFunction(
   return undefined;
 }
 
-function getRoute(
+export function getRoute(
   path: string
 ): Record<
   string,
@@ -121,7 +121,7 @@ export function handleRouting(
   }
 }
 
-function registerRoute(
+export function registerRoute(
   path: string,
   method: string,
   routeFunction: (req: http.IncomingMessage, res: http.ServerResponse) => void
