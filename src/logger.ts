@@ -37,7 +37,7 @@ let logger = {
       info: '\x1b[32m',
       debug: '\x1b[34m',
     };
-    console.log(colors[color], message);
+    console.log(colors[color] + message + '\x1b[0m');
   },
 
   getColorForStatusCode: (statusCode: number): string => {

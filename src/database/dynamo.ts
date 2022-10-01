@@ -8,7 +8,7 @@ const dynamo = new aws.DynamoDB.DocumentClient({
   secretAccessKey: env.SECRET_KEY,
 });
 
-export function createStreamTable() {
+export async function createStreamTable() {
   const db = new aws.DynamoDB({
     region: env.AWS_REGION,
     accessKeyId: env.ACCESS_KEY,
@@ -35,16 +35,17 @@ export function createStreamTable() {
     },
   };
 
-  db.createTable(params, (err, data) => {
-    if (err) {
-      logger.logWithColor('Skipping table creation: ' + err.message, 'warn');
-    } else {
-      logger.logWithColor(
-        `Table '${data.TableDescription?.TableName}' created successfully`,
-        'info'
-      );
-    }
-  });
+  try {
+    let data = await db.createTable(params).promise();
+    logger.logWithColor(
+      `Table '${data.TableDescription?.TableName}' created successfully`,
+      'info'
+    );
+    return 0;
+  } catch (error: any) {
+    logger.logWithColor('Skipping table creation: ' + error.message, 'warn');
+    return 1;
+  }
 }
 
 export default dynamo;

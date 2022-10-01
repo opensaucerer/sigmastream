@@ -10,6 +10,18 @@ declare global {
     }
   }
   var env: NodeJS.ProcessEnv;
+  var jest: (name: string, fn: Function) => void;
+  var expect: (actual: any) => {
+    toBe: (expected: any) => void;
+    toNotBe: (expected: any) => void;
+    toInclude: (expected: any) => void;
+    toNotInclude: (expected: any) => void;
+    toOccur: (occurence: any) => {
+      in: (parent: any[]) => void;
+    };
+    toBeObject: (expected: any) => void;
+  };
+  var afterJest: (fn: any) => void;
 }
 
 declare module 'http' {

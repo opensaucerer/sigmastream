@@ -100,6 +100,7 @@ export async function registerStream(data: {
   { userId?: string; streams?: string[]; error?: AWSError } | undefined
 > {
   let { userId, streamId } = data;
+
   let streams = await getStreams(userId);
   if (streams && !streams.error) {
     return await registerStreamWithCondition({ streamId, userId });
