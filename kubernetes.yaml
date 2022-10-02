@@ -1,0 +1,46 @@
+# deploy SigmaStream from pre-built docker image on ECR
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sigmastream
+  labels:
+    app: sigmastream
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sigmastream
+  template:
+    metadata:
+      labels:
+        app: sigmastream
+    spec:
+      containers:
+        - name: ipfs
+          image: '935588132950.dkr.ecr.us-west-2.amazonaws.com/opensaucerer:sigmastream'
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 3000
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 100
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 300
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: '250Mi'
+              ephemeral-storage: '500Mi'
+              cpu: '1000m'
+            limits:
+              memory: '500Mi'
+              ephemeral-storage: '2Gi'
+              cpu: '2000m'

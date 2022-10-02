@@ -2,6 +2,10 @@
 
 An API Service for limiting concurrent streams allowed per user.
 
+## Deployment
+
+I intended deploying this service to AWS EKS using the manifests present in the root directory but I think I ran out of AWS Quota and couldn't spin up an EC2 container to use as a node for the cluster.
+
 ### Assumptions
 
 One assumption here is that a user is allowed to use their account on different devices as well as stream the same content on these devices at the same time with each counting towards their concurrent stream limit. This is a very common use case for streaming services.
@@ -22,6 +26,8 @@ Two endpoints are exposed by the service:
   > DynamoDB attribute of type Number can store numbers up to 38 digits of precision.
 
   Even in the presence of a million RPS to perform a write operation, the service will still be good to version safely with precision for hundreds of years.
+
+You can also find a Postman collection for the endpoints here [SigmaStream.postman_collection.json](https://documenter.getpostman.com/view/11854111/2s83tFGWv7)
 
 ### Notes
 
